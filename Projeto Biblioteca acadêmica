@@ -1,0 +1,367 @@
+MODELAGEM FÍSICA
+
+
+DEFINIÇÃO DAS TABELAS
+
+
+CREATE TABLE area (
+ Codigo int(5) NOT NULL,
+ Descricao varchar(200) DEFAULT NULL,
+ PRIMARY KEY (Codigo)
+); 
+
+
+CREATE TABLE associado (
+ Codigo bigint(11) NOT NULL,
+ Nome varchar(100) NOT NULL,
+ Sexo char(1) DEFAULT 'X',
+ Tipo varchar(15) DEFAULT NULL,
+ Cidade varchar(30) DEFAULT NULL,
+ CEP int(8) DEFAULT NULL,
+ Rua varchar(100) DEFAULT NULL,
+ Estado char(2) DEFAULT NULL,
+ Numero int(4) DEFAULT NULL,
+ PRIMARY KEY (Codigo)
+);
+
+
+CREATE TABLE associado_email (
+ Codigo bigint(11) NOT NULL,
+ Email varchar(50) NOT NULL,
+ PRIMARY KEY (Codigo, Email)
+); 
+
+
+CREATE TABLE associado_telefone (
+ Codigo bigint(11) NOT NULL,
+ Telefone bigint(11) NOT NULL,
+ PRIMARY KEY (Codigo, Telefone)
+);
+
+
+CREATE TABLE autor (
+ Codigo int(7) NOT NULL,
+ Nome varchar(100) NOT NULL,
+ PRIMARY KEY (Codigo)
+); 
+
+
+CREATE TABLE autor_email (
+ Codigo int(7) NOT NULL,
+ Email varchar(50) NOT NULL,
+ PRIMARY KEY (Codigo, Email)
+);
+
+
+CREATE TABLE autor_livro (
+ Cod_Autor int(7) NOT NULL,
+ ISBN_Livro bigint(13) NOT NULL,
+ PRIMARY KEY (Cod_Autor, ISBN_Livro)
+); 
+
+
+CREATE TABLE autor_telefone (
+ Codigo int(7) NOT NULL,
+ Telefone bigint(11) NOT NULL,
+ PRIMARY KEY (Codigo, Telefone)
+);
+
+
+CREATE TABLE editora (
+ Codigo int(4) NOT NULL,
+ Nome varchar(100) DEFAULT 'Editora',
+ Cidade varchar(30) DEFAULT NULL,
+ CEP int(8) DEFAULT NULL,
+ Rua varchar(100) DEFAULT NULL,
+ Estado char(2) DEFAULT NULL,
+ Numero int(4) DEFAULT NULL,
+ PRIMARY KEY (Codigo)
+);
+
+
+CREATE TABLE editora_email (
+ Codigo int(4) NOT NULL,
+ Email varchar(50) NOT NULL,
+ PRIMARY KEY (Codigo, Email)
+);
+
+
+CREATE TABLE editora_livro (
+ Cod_Editora int(4) NOT NULL,
+ ISBN` bigint(13) NOT NULL,
+ Data_Edicao date DEFAULT NULL,
+ PRIMARY KEY (Cod_Editora, ISBN)
+); 
+
+
+CREATE TABLE editora_telefone (
+ Codigo int(4) NOT NULL,
+ Telefone bigint(11) NOT NULL,
+ PRIMARY KEY (Codigo, Telefone)
+);
+
+
+CREATE TABLE emprestimo (
+ Numero bigint(10) NOT NULL,
+ Multa decimal(4,2) DEFAULT 0.00,
+ Data_retirada date DEFAULT NULL,
+ Data_entrega date DEFAULT NULL,
+ Cod_associado bigint(11) DEFAULT NULL,
+ Cod_exemplar bigint(16) DEFAULT NULL,
+ PRIMARY KEY (Numero),
+ FOREIGN KEY (Cod_associado) REFERENCES associado (Codigo),
+ FOREIGN KEY (Cod_exemplar) REFERENCES exemplar (Codigo)
+);
+
+
+CREATE TABLE exemplar (
+ Codigo bigint(16) NOT NULL,
+ ISBN_Livro bigint(13) DEFAULT NULL,
+ PRIMARY KEY (Codigo),
+ FOREIGN KEY (ISBN_Livro) REFERENCES livro (ISBN)
+); 
+
+
+CREATE TABLE livro (
+ ISBN bigint(13) NOT NULL,
+ Titulo varchar(100) DEFAULT NULL,
+ Local_Edicao varchar(30) DEFAULT NULL,
+ Num_Pag int(5) DEFAULT NULL,
+ Cod_Area int(5) DEFAULT NULL,
+ PRIMARY KEY (ISBN),
+ FOREIGN KEY (Cod_Area) REFERENCES area (Codigo)
+); 
+
+
+CREATE TABLE palavrachave_livro (
+ Cod_PC int(5) NOT NULL,
+ ISBN_Livro bigint(13) NOT NULL,
+ PRIMARY KEY (Cod_PC, ISBN_Livro)
+); 
+
+
+CREATE TABLE palavra_chave (
+ Codigo int(5) NOT NULL,
+ Descricao varchar(200) DEFAULT NULL,
+ PRIMARY KEY (Codigo)
+);
+
+
+
+
+ALTERAÇÕES DAS TABELAS PARA ADICIONAR CHAVES ESTRANGEIRAS
+
+
+As chaves estrangeiras já foram definidas em tempo de criação das tabelas, por isso, não foi necessário alterar as tabelas para acrescentá-las. Para isso, começamos criando as tabelas que não possuíam chaves estrangeiras, e à medida que as tabelas que seriam referenciadas tinham sido criadas foi possível criar as demais tabelas.
+
+
+
+
+INSERÇÃO DE DADOS
+
+
+INSERT INTO palavra_chave (Codigo, Descricao) VALUES
+(02020, 'Web Marketing'),
+(10002, 'Habilidades de Escritório'),
+(02000, 'Marketing');
+
+
+INSERT INTO palavrachave_livro (Cod_PC, ISBN_Livro) VALUES
+(02020, 9788543105338),
+(10002, 9788543105338),
+(02000, 9788543105338);
+
+
+INSERT INTO area (Codigo, Descricao) VALUES
+(10210, 'Administração, Negócios e Economia'),
+(22014, 'Tecnologia e Programação de Computadores');
+
+
+INSERT INTO autor (Codigo, Nome) VALUES
+(8900192, 'Philip Kotler'),
+(0919201, 'Hermawan Kartajaya'),
+(2982313, 'Iwan Setiawan');
+
+
+INSERT INTO autor_livro (Cod_Autor, ISBN_Livro) VALUES
+(8900192, 9788543105338),
+(0919201, 9788543105338);
+INSERT INTO autor_email (Codigo, Email) VALUES
+(8900192, 'p-kotler@kellogg.northwestern.edu'),
+(0919201, 'hermawankartajaya@markplusinc.com'),
+(2982313, 'iwan@marketeers.com');
+
+
+INSERT INTO livro (ISBN, Titulo, Local_Edicao, Num_Pag, Cod_Area) VALUES
+(9788543105338, 'Marketing 4.0: Do tradicional ao digital', '1ª edição', 208, 10210),
+(9788536533742, 'Banco de dados: Teoria e Desenvolvimento', '2ª edição', 368, 22014),
+(9788575227183, 'Introdução à Programação com Python: Algoritmos e Lógica de Programação Para Iniciantes', '3ª edição', 328, 22014);
+
+
+INSERT INTO autor_telefone (Codigo, Telefone) VALUES
+(3098132, 31205987780),
+(8099231, 07984140657),
+(8901341, 11987560821);
+
+
+INSERT INTO editora (Codigo, Nome, Cidade, CEP, Rua, Estado, Numero) VALUES
+(1000, 'Editora Sextante', 'Rio de Janeiro', 22270000, 'Rua Voluntários da Pátria', 'RJ', 45),
+(3092, 'Editora Érica', 'São Paulo', 05425020, 'Avenida das Nações Unidas', 'SP',  7221),
+(8901, 'Novatec Editora', 'São Paulo', 02460000, 'Rua Luis Antônio dos Santos', 'SP', 110);
+
+
+INSERT INTO editora_telefone (Codigo, Telefone) VALUES
+(1000, 2125384100), 
+(3092, 1144579556), 
+(8901, 1129596529);
+
+
+INSERT INTO exemplar (Codigo, ISBN_Livro) VALUES
+(1009788543105338, 9788543105338), 
+(1019788543105338, 9788543105338), 
+(1029788543105338, 9788543105338);
+
+
+INSERT INTO editora_email (Codigo, Email) VALUES
+(1000, 'atendimento@sextante.com.br'), 
+(3092, 'marketing@erica.com.br'), 
+(2890, 'falecom@cirandacultural.com.br');
+
+
+INSERT INTO editora_livro (Cod_Editora, ISBN, Data_Edicao) VALUES
+(1000, 9788543105338, 20170724), 
+(3092, 9788536533742, 20201124), 
+(8901, 9788575227183, 20190108);
+
+
+INSERT INTO associado_telefone (Codigo, Telefone) VALUES
+(12120071003, 83998075168),
+(12120062031, 83981037739),
+(12220072045, 83988458762);
+
+
+INSERT INTO associado_email (Codigo, Email) VALUES
+(12120071003, 'pedrosilva82@gmail.com'),
+(12120062031, 'josemaria@hotmail.com'),
+(12220072045, 'bentocosta@gmail.com');
+
+
+INSERT INTO associado (Codigo, Nome, Sexo, Tipo, Cidade, CEP, Rua, Estado, Numero) VALUES
+(12120071003, 'Pedro Pereira da Silva', 'M', 'Professor', 'Campina Grande', 58433278, 'Rua Dr. Luís Marcelino de Oliveira', 'PB', 440),
+(12120062031, 'José Maria Campos', 'M', 'Professor', 'Campina Grande', 58433103, 'Rua Sousa', 'PB', 331),
+(12220072045, 'Bento Diniz Costa', 'M', 'Professor', 'João Pessoa', 58043080, 'Rua Armando Vasconcelos', 'PB', 191);
+
+
+INSERT INTO emprestimo (Numero, Data_retirada, Data_entrega, Cod_associado, Cod_exemplar) VALUES
+(1023978901, 20220821, 20220828, 12120071003, 1009788543105338),
+(1209866189, 20220822, 20220829, 12120062031, 2019788575227183),
+(2768800187, 20220822, 20220829, 12220071047, 2029788575227183);
+
+
+
+
+REALIZAÇÃO DAS CONSULTAS
+
+
+1. As diversas formas de buscar um livro na biblioteca (ISBN, título, autor, ...);
+Por ISBN:
+SELECT titulo 
+FROM livro 
+WHERE ISBN = 9788536533742; 
+
+
+Por Título:
+SELECT ISBN 
+FROM livro
+WHERE titulo = 'Iracema';
+
+
+Por Código da Área:
+SELECT titulo 
+FROM livro 
+WHERE cod_area = 57891;
+
+
+Por Nome do Autor:
+	SELECT a. nome as 'Autor', l.titulo as 'Obra' 
+FROM livro l, autor a, autor_livro al 
+WHERE l.ISBN = al.ISBN_Livro and a.Codigo = al.Cod_Autor and a.Nome = 'Machado de Assis';
+
+
+2. Identificação do número de livros por autor, por editora, por palavra-chave ... ;
+Por Autor:
+	SELECT a.Nome, a.Codigo, COUNT(al.Cod_Autor) as 'Quantidade'
+FROM autor a, autor_livro al
+WHERE al.Cod_Autor = a.Codigo 
+GROUP BY a.Nome;
+
+
+Por Editora:
+	SELECT e.Nome, e.Codigo, COUNT(el.Cod_Editora) as 'Quantidade'
+FROM editora e, editora_livro el
+WHERE el.Cod_Editora = e.Codigo 
+GROUP BY e.Nome;
+
+
+Por Palavra Chave:
+SELECT pc.Descricao, COUNT(pcl.ISBN_Livro) as 'Quantidade'
+FROM palavra_chave pc, palavrachave_livro pcl
+WHERE pc.Codigo = pcl.Cod_PC 
+GROUP BY pc.Descricao;
+
+
+3. Relação de livros emprestados;
+	SELECT emprestimo.Cod_exemplar, livro.Titulo 
+FROM emprestimo , exemplar , livro 
+WHERE emprestimo.Cod_exemplar = exemplar.Codigo and exemplar.ISBN_Livro = livro.ISBN 
+GROUP BY emprestimo.Data_retirada;
+
+
+4. Relação de associados com o número máximo de livros emprestados;
+SELECT a.Nome 
+FROM associado a, emprestimo e
+WHERE e.Cod_associado = a.Codigo 
+GROUP BY a.Nome 
+HAVING COUNT(e.Cod_associado = a.Codigo) = 3;
+
+
+5. Identificação do mês ou meses no(s) qual(is) foi registrado o maior número de
+empréstimos;
+SELECT monthname(emprestimo.Data_retirada) as 'Mês', count(month(emprestimo.Data_retirada)) as 'Quantidade de Emprestimo'
+FROM emprestimo
+GROUP BY month(emprestimo.Data_retirada)
+HAVING count(month(emprestimo.Data_retirada)) >= (SELECT MAX(month(emprestimo.Data_retirada)) FROM emprestimo);
+
+
+6. Identificação do(s) associado(s) que retirou mais livros na biblioteca;
+SELECT e.Cod_associado, a.Nome 
+FROM emprestimo e, associado a
+GROUP BY e.Cod_associado = a.Codigo 
+HAVING MAX(e.Cod_associado = a.Codigo); 
+
+
+7. Qual o título mais emprestado?
+SELECT emprestimo.Cod_exemplar, livro.Titulo
+FROM emprestimo, livro, exemplar 
+WHERE emprestimo.Cod_exemplar = exemplar.Codigo and exemplar.ISBN_Livro = livro.ISBN 
+GROUP BY emprestimo.Cod_exemplar = exemplar.Codigo 
+HAVING MAX(emprestimo.Cod_exemplar = exemplar.Codigo);
+
+
+8. Identificação do ano ou anos no(s) qual(is) foi registrado o maior número de  empréstimos;
+SELECT year(emprestimo.Data_retirada) as 'Ano', count(year(emprestimo.Data_retirada)) as 'Quantidade de Emprestimo'
+FROM emprestimo
+GROUP BY year(emprestimo.Data_retirada)
+HAVING count(year(emprestimo.Data_retirada)) >= (SELECT count(year(emprestimo.Data_retirada)) FROM emprestimo GROUP BY year(emprestimo.Data_retirada) HAVING Max(year(emprestimo.Data_retirada)));
+
+
+9. Identificação o número de empréstimos por mês;
+SELECT monthname(emprestimo.Data_retirada) as 'Mês', count(month(emprestimo.Data_retirada)) as 'Quantidade de Emprestimo'
+FROM emprestimo
+GROUP BY month(emprestimo.Data_retirada);	
+
+
+10. Identificação o número de empréstimos por ano;
+SELECT year(emprestimo.Data_retirada) as 'Ano', count(year(emprestimo.Data_retirada)) as 'Quantidade de Emprestimo'
+FROM emprestimo
+GROUP BY year(emprestimo.Data_retirada);
